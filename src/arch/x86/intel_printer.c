@@ -45,15 +45,7 @@ void print_register(pa_instruction* instruction, pa_x86_operand* operand, pa_x86
 void print_immediate(pa_instruction* instruction, pa_x86_operand* operand, pa_x86_instruction_internals* x86_instruction_internals, pa_x86_instruction_context* x86_instruction_context)
 {
 	concat_str(&instruction->operand_str, HEX_NOTATION);
-	if (IS_NEGATIVE(operand->immediate, operand->size))
-	{
-		int64_t mask = LSH_FILL(0xFF, (operand->size - 1) * 8);
-		concat_decimal(&instruction->operand_str, operand->immediate & mask, HEX_FORMAT);
-	}
-	else
-	{
-		concat_decimal(&instruction->operand_str, operand->immediate, HEX_FORMAT);
-	}
+	concat_decimal(&instruction->operand_str, operand->immediate, HEX_FORMAT);
 }
 
 void print_memory(pa_instruction* instruction, pa_x86_operand* operand, pa_x86_instruction_internals* x86_instruction_internals, pa_x86_instruction_context* x86_instruction_context)

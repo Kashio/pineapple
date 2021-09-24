@@ -388,16 +388,50 @@ void I(pa_handle* handle, uint8_t* instruction_stream, pa_instruction* instructi
 		uint8_t new_operand_size;
 		if (x86_instruction_internals->last_operand_size)
 		{
-			// TODO: sign extend to last operand size
 			new_operand_size = x86_instruction_internals->last_operand_size;
 		}
 		else
 		{
-			// TODO: sign extend to stack pointer size (by mode sp/esp/rsp)
-			new_operand_size = pow(2, handle->mode + 1);
+			if (handle->mode == VD_MODE_16)
+			{
+				if (x86_instruction_internals->prefixes[2])
+				{
+					new_operand_size = DATA_32;
+				}
+				else
+				{
+					new_operand_size = DATA_16;
+				}
+			}
+			else if (handle->mode == VD_MODE_32)
+			{
+				if (x86_instruction_internals->prefixes[2])
+				{
+					new_operand_size = DATA_16;
+				}
+				else
+				{
+					new_operand_size = DATA_32;
+				}
+			}
+			else if (handle->mode == VD_MODE_64)
+			{
+				if (x86_instruction_internals->rex.w)
+				{
+					new_operand_size = DATA_64;
+				}
+				else if (x86_instruction_internals->prefixes[2])
+				{
+					new_operand_size = DATA_16;
+				}
+				else
+				{
+					new_operand_size = DATA_64;
+				}
+			}
 		}
 		uint64_t mask = LSH_FILL(1, new_operand_size * 8 - 1) - LSH_FILL(1, operand.size * 8 - 1);
-		operand.immediate |= mask;
+		operand.immediate &= mask;
 		operand.size = x86_instruction_internals->last_operand_size = new_operand_size;
 	}
 	else

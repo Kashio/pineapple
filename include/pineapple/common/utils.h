@@ -15,7 +15,7 @@ extern "C" {
 #endif
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define LSH_FILL(m, s) ((m) << (s) | (uint64_t)(1 << (s)) - 1)
-#define IS_NEGATIVE(n, b) (0x1 << ((b) * 8 - 1)) & (n)
+#define IS_NEGATIVE(n, b) ((uint64_t)0x1 << ((b) * 8 - 1)) & (n)
 #define HEX_NOTATION "0x"
 #define DECIMAL_FORMAT "%d"
 #define HEX_FORMAT "%x"
